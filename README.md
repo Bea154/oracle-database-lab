@@ -4,3 +4,4 @@ testing, change management and Git workflows.
 
 Name: Beatriz Lopez
 Professor: Richard Aviles Lopez
+Remote change: edited directly on GitHub.
