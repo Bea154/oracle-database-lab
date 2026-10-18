@@ -1,0 +1,36 @@
+1. ¿Por qué un Issue sin criterios de aceptación es un problema?
+Porque no establece condiciones concretas para comprobar que el trabajo está terminado. El autor y el revisor pueden interpretar de forma diferente lo que se necesita. Por ejemplo, pedir «crear una guía de contribución» es menos preciso que indicar que debe incluir las convenciones de ramas, commits y Pull Requests.
+2. ¿Qué diferencia hay entre Refs #N y Closes #N?
+Refs #N relaciona el cambio con un Issue sin cerrarlo. Closes #N indica que el cambio lo resuelve y permite cerrarlo automáticamente cuando el PR o el commit se integra en la rama predeterminada.
+3. ¿Qué ocurre al hacer push directamente a una rama main protegida?
+Si las reglas exigen trabajar mediante Pull Requests y se aplican a mi usuario, GitHub rechaza el push. Lo comprobé en la práctica: apareció el mensaje «Changes must be made through a pull request». Es el funcionamiento esperado de la protección.
+4. ¿Qué riesgo tiene aprobar un PR sin mirar los archivos?
+Se pueden incorporar errores, cambios que no cumplen el Issue o información sensible. La confianza en el autor no sustituye la revisión: hay que comprobar el contenido y las pruebas antes de aprobar.
+5. ¿Hay que abrir un PR nuevo cuando el revisor solicita cambios?
+No. Se corrigen los archivos en la misma rama, se crea un nuevo commit y se hace push. Como el PR está vinculado a esa rama, se actualiza automáticamente y conserva los comentarios y la conversación anterior.
+6. ¿Qué diferencia hay entre Merge commit, Squash and merge y Rebase and merge?
+- Merge commit: conserva los commits de la rama y añade un commit de fusión.
+- Squash and merge: reúne los cambios de la rama en un único commit.
+- Rebase and merge: reaplica los commits sobre la rama de destino, con nuevos identificadores y sin crear un commit de fusión.
+Para una rama con commits como «wip», «fix», «fix2» y «ok ya», elegiría Squash and merge, con un mensaje final que explique claramente el cambio.
+7. ¿Por qué borrar una rama después del merge no elimina el trabajo?
+Porque los cambios ya están incorporados en main. Al borrar la rama se elimina su referencia, pero el trabajo integrado sigue disponible en la rama principal.
+8. ¿Qué debe contener como mínimo la descripción de un PR?
+Debe explicar qué cambia, por qué es necesario, cómo se ha comprobado y qué Issue resuelve. En la práctica utilicé los apartados Summary, Changes, Testing y Related Issue, incluyendo Closes #1.
+9. ¿Qué le falta al comentario «esto está mal»? Reescríbelo.
+Le falta señalar el problema, explicar su importancia y proponer una corrección. También debe dejar claro si bloquea la aprobación. Por ejemplo:
+issue (blocking): El ejemplo de nombre de rama contiene un espacio y Git no lo acepta. Elimínalo para que quede fix/85-customer-email-validation.
+
+10. ¿Qué diferencia hay entre proteger main y acordar no hacer push directo?
+El acuerdo depende de que todos lo recuerden y lo respeten. La protección aplica reglas técnicas que pueden impedir el push directo y exigir una revisión antes de fusionar. Para que sea efectiva, también hay que configurar a quiénes se aplican las reglas y las posibles excepciones.
+11. Diferencia entre issue (blocking) y nitpick (if-minor), con un ejemplo.
+Un comentario issue (blocking) señala un problema que debe resolverse antes de aprobar:
+issue (blocking): El nombre de rama del ejemplo contiene un espacio. Corrígelo para que sea válido en Git.
+
+Un nitpick (if-minor) propone un detalle menor que no debería impedir la aprobación:
+nitpick (if-minor): Podríamos utilizar el mismo estilo de mayúsculas en todos los títulos para mantener la uniformidad.
+
+12. ¿Qué versión SemVer corresponde a feat! si cambia la firma de una función pública de forma incompatible?
+Corresponde un incremento MAJOR, porque ! señala un cambio incompatible. Por ejemplo, una versión estable pasaría de 1.4.2 a 2.0.0, ya que los usuarios podrían tener que adaptar su código.
+13. ¿Por qué abrir un Draft PR pronto puede ahorrar tiempo?
+Porque permite revisar el enfoque antes de completar todo el trabajo. El equipo puede detectar malentendidos o problemas de diseño y corregirlos pronto, evitando rehacer una solución ya terminada. El estado Draft comunica que el cambio todavía está en preparación.
