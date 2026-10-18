@@ -1,7 +1,7 @@
 # Contributing to oracle-database-lab   
 
 ## Branch naming 
-<type>/<issue number>-<short-description>, e.g. feature/56-customer-search, fix/85- customer-email-validation
+<type>/<issue number>-<short-description>, e.g. feature/56-customer-search, fix85-customer-email-validation
 
 ## Commit messages 
 This project follows Conventional Commits:  
