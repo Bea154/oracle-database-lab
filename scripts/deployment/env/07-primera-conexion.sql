@@ -1,0 +1,11 @@
+WHENEVER SQLERROR EXIT SQL.SQLCODE
+SET LINESIZE 200 PAGESIZE 100
+PROMPT == 1. Version del motor ==
+SELECT banner_full FROM v$version;
+PROMPT == 2. Contenedor Oracle actual ==
+SHOW CON_NAME
+PROMPT == 3. Estado de la instancia ==
+SELECT instance_name, status FROM v$instance;
+PROMPT == 4. Usuario de aplicacion ALUMNO ==
+SELECT username, account_status FROM dba_users WHERE username = 'ALUMNO';
+EXIT
