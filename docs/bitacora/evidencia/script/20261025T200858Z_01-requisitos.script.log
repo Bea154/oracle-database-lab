@@ -1,0 +1,37 @@
+== Sistema operativo y arquitectura ==
+Linux
+x86_64
+Entorno: Ubuntu en WSL 2
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+== Shell ==
+/bin/bash
+== Espacio libre ==
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdd       1007G  1.7G  955G   1% /
+== Memoria ==
+               total        used        free      shared  buff/cache   available
+Mem:           5.8Gi       817Mi       4.8Gi        49Mi       390Mi       5.0Gi
+Swap:          2.0Gi       536Ki       2.0Gi
+== Herramientas ==
+OK git
+OK gh
+OK curl
+OK wget
+OK unzip
+OK zip
+OK tree
+OK rsync
+OK ncdu
+OK jq
+OK htop
+OK lsof
+OK ss
+OK dig
+OK ping
+OK tmux
+OK vim
+OK nano
+OK shellcheck
+== Git ==
+git version 2.43.0
+b.lopjuanes@gmail.com
