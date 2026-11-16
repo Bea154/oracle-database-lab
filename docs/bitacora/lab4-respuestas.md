@@ -21,3 +21,31 @@ se copian.
 - Verificación SHA-256: todos los archivos muestran OK.
 - Evidencia: 20261116T193010Z_00-verificacion-backup.script.log.
 - Todavía no se ha probado la restauración.
+
+## Diagnóstico y correcciones — Parte C
+
+Los cinco datafiles de negocio estaban dentro del volumen, pero en
+una carpeta no estándar. La ruta dbs era un enlace simbólico hacia
+/opt/oracle/oradata/dbconfig/FREE/dbs.
+Evidencia: 20261116T193715Z_01-diagnostico-inicial.script.log.
+
+Los reubicamos en /opt/oracle/oradata/FREE/FREEPDB1/.
+Primero se pone el tablespace OFFLINE, después se copia el archivo
+y se actualiza su ruta en Oracle con RENAME DATAFILE.
+RENAME DATAFILE no mueve físicamente el archivo.
+Cada datafile quedó con crecimiento automático y un máximo de 1 GB.
+Al repetir el script respondió "Nada que reubicar".
+
+V003 convirtió los cinco propietarios en cuentas de solo esquema:
+conservan sus objetos, pero tienen AUTHENTICATION_TYPE = NONE.
+El intento de conexión de admin_academia fue rechazado con ORA-01017.
+No modificamos V000 ni V001 porque son migraciones ya aplicadas.
+
+La prueba de persistencia recreó el contenedor conservando el volumen.
+Antes y después había 14 tablas y 0 estudiantes.
+El nuevo contenedor publica únicamente el puerto 1521.
+Esta prueba comprueba la persistencia del volumen; no es una
+restauración de la copia de seguridad.
+
+Después aplicamos V002: 20000 estudiantes, 40 asignaturas y
+60000 matrículas. El estudiante 101 tiene estado ACTIVO.
