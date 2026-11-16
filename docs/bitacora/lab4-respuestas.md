@@ -98,3 +98,34 @@ No apareció ORA-20013 en el extracto revisado.
 
 Evidencias: registros terminados en
 _06-arranque-por-etapas.script.log y _06-alert-log.script.log.
+
+## Parámetros — Parte F
+
+v$parameter muestra los valores efectivos de la sesión actual.
+v$spparameter muestra los ajustes guardados en el SPFILE.
+
+Con open_cursors, SCOPE=MEMORY dejó 400 en memoria y 300 en SPFILE.
+SCOPE=BOTH dejó 500 en ambos. Después lo restauramos a 300.
+Al arrancar con SPFILE, el SCOPE predeterminado de ALTER SYSTEM
+SET es BOTH, siempre que el parámetro admita ese cambio.
+
+db_files rechazó el cambio en memoria con ORA-02095.
+Con SCOPE=SPFILE quedó 200 en memoria y 300 en SPFILE.
+RESET eliminó el ajuste persistente; en memoria siguió en 200.
+
+Aunque processes aparecía como IMMEDIATE, el intento de cambiarlo
+en memoria fue rechazado con ORA-02097 y ORA-02095.
+memory_size devolvió ORA-62352 porque no estaba configurado
+al arrancar la instancia.
+
+En FREEPDB1 pudimos cambiar open_cursors, pero cambiar processes
+devolvió ORA-65040. Después eliminamos el ajuste local y verificamos
+open_cursors = 300 tanto en la raíz como en FREEPDB1.
+
+Creamos PFILE desde SPFILE (32 líneas) y desde memoria (122 líneas).
+Versionar estas copias permite comparar la configuración y detectar
+deriva de configuración: diferencias respecto al estado previsto.
+
+Evidencias: _07-parametros-lectura.spool.log,
+_07-parametros-cambios.script.log, _07-verificacion-final.script.log
+y config/initFREE_lab4*.ora.
