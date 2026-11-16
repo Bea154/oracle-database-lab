@@ -49,3 +49,28 @@ restauración de la copia de seguridad.
 
 Después aplicamos V002: 20000 estudiantes, 40 asignaturas y
 60000 matrículas. El estudiante 101 tiene estado ACTIVO.
+
+## Instancia y base de datos — Parte D
+
+Me conecté como C##OPS_RO al servicio free, en CDB$ROOT.
+La cuenta permite observar el catálogo sin utilizar SYSDBA.
+
+Tres datos de la instancia:
+- Nombre: FREE.
+- Estado: OPEN.
+- Arranque: 2026-11-16 19:52:40.
+
+Tres datos de la base:
+- DBID: 1509902213.
+- Modo de archivado: ARCHIVELOG.
+- Modo de apertura: READ WRITE.
+
+La consulta SQL mostró 16 datafiles, 3 tempfiles, 3 miembros
+de redo y 2 control files.
+
+Desde Linux observé 61 procesos de background y un consumo del
+contenedor de 2.109 GiB. Esta cifra no equivale solo a la SGA.
+No se deben sumar los RSS, porque incluyen memoria compartida.
+
+Evidencias: archivos terminados en _05-instancia-y-base.spool.log
+y _05-instancia-so.script.log.
