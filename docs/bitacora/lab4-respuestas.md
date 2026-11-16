@@ -129,3 +129,34 @@ deriva de configuración: diferencias respecto al estado previsto.
 Evidencias: _07-parametros-lectura.spool.log,
 _07-parametros-cambios.script.log, _07-verificacion-final.script.log
 y config/initFREE_lab4*.ora.
+
+## Memoria y caché — Parte G
+
+La instancia usa ASMM: memory_target = 0, sga_target = 1536M
+y pga_aggregate_target = 512M. Oracle gestiona automáticamente
+el reparto de la SGA y gestiona la PGA por separado.
+db_cache_size = 0 y shared_pool_size = 0 no significan áreas
+vacías, sino que no fijamos mínimos explícitos para ellas.
+
+En el experimento de caché ambas rondas devolvieron 17600 activos:
+- Fría: 380 lecturas lógicas y 265 físicas.
+- Caliente: 247 lecturas lógicas y 0 físicas.
+La segunda ejecución siguió leyendo bloques, pero desde memoria.
+Al final había 245 bloques de ACA_ESTUDIANTES en caché.
+La tasa orientativa de acierto fue 30.3% y 100%, respectivamente.
+
+En 1000 consultas con literales hubo 1008 análisis duros y
+620 ms de tiempo total. Con variable de enlace hubo 1 análisis
+duro, un cursor reutilizado 1000 veces y 10 ms de tiempo total.
+
+La ordenación automática de 60000 matrículas fue OPTIMAL:
+2314 KiB usados, sin TEMP y 40 ms.
+Con el área limitada a 64 KiB necesitó 6 pasadas y 2048 KiB
+en TEMP; tardó 270 ms.
+
+El resumen acumulado de áreas de trabajo de la instancia mostró
+4576 ejecuciones óptimas, 0 de una pasada y 2 de varias pasadas.
+Estas cifras no corresponden únicamente al experimento.
+
+Evidencias: _08-memoria.spool.log,
+_08-experimento-cache.script.log y _08-parse-y-pga.script.log.
