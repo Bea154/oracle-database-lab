@@ -160,3 +160,26 @@ Estas cifras no corresponden únicamente al experimento.
 
 Evidencias: _08-memoria.spool.log,
 _08-experimento-cache.script.log y _08-parse-y-pga.script.log.
+
+## Procesos — Parte H
+
+LGWR mostró SPID 1811 en Oracle, coincidente con el PID 1811
+observado dentro del contenedor mediante /proc.
+Linux mostró 104 MB de RSS para ese proceso. El RSS incluye
+memoria compartida y no equivale a memoria privada del proceso.
+
+docker top puede mostrar otro PID porque usa el espacio de
+identificadores del host; Oracle utiliza el del contenedor.
+
+LGWR escribe el redo necesario para confirmar las transacciones.
+DBWn escribe los bloques modificados a los datafiles.
+
+PMON detecta procesos terminados y participa en su limpieza,
+por ejemplo cuando un proceso servidor termina inesperadamente.
+SMON participa en la recuperación de instancia, por ejemplo
+tras una caída sin cierre limpio.
+
+Hay 4 procesos ARCn, coherente con el modo ARCHIVELOG.
+Archivan el redo de los grupos llenos.
+
+Evidencias: _09-procesos.spool.log y _09-procesos-so.script.log.
