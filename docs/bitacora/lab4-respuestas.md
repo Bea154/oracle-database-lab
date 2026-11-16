@@ -74,3 +74,27 @@ No se deben sumar los RSS, porque incluyen memoria compartida.
 
 Evidencias: archivos terminados en _05-instancia-y-base.spool.log
 y _05-instancia-so.script.log.
+
+## Arranque por etapas — Parte E
+
+En NOMOUNT existe la instancia: Oracle ha leído el SPFILE,
+reservado la SGA y arrancado los procesos. v$instance muestra
+STARTED, pero v$database devuelve ORA-01507 porque la base
+todavía no está montada.
+
+En MOUNT Oracle ha abierto los control files y conoce los
+16 datafiles. La base aún no está abierta: consultar dba_tables
+devuelve ORA-01219 porque requiere acceder al diccionario
+almacenado en los datafiles.
+
+En OPEN la base queda READ WRITE y la instancia OPEN/ACTIVE.
+FREEPDB1 se abrió automáticamente en READ WRITE porque tenía
+guardado el estado OPEN mediante SAVE STATE.
+
+El alert log confirma la parada completa, el montaje y la apertura.
+Aparecieron avisos ORA-00800 con Set Priority Failed para VKTM
+y LGWR. En esta ejecución no impidieron abrir la base.
+No apareció ORA-20013 en el extracto revisado.
+
+Evidencias: registros terminados en
+_06-arranque-por-etapas.script.log y _06-alert-log.script.log.
