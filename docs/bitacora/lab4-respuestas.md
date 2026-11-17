@@ -183,3 +183,24 @@ Hay 4 procesos ARCn, coherente con el modo ARCHIVELOG.
 Archivan el redo de los grupos llenos.
 
 Evidencias: _09-procesos.spool.log y _09-procesos-so.script.log.
+
+## Contenedores, diccionario y archivos — Apartados 10 y 11
+
+PDB_LAB4 se creó desde PDB$SEED, pasó de MOUNTED a READ WRITE
+y después se cerró y eliminó con sus datafiles.
+Los errores ORA-65096, ORA-65094 y ORA-65025 fueron esperados.
+La prueba de visibilidad terminó con 0 usuarios LAB4 restantes.
+
+Desde CDB$ROOT, DBA_TABLESPACES mostró 5 tablespaces.
+CDB_TABLESPACES mostró 15: 5 de la raíz y 10 de FREEPDB1.
+
+Concedimos SELECT sobre SYS.V_$DIAG_ALERT_EXT a C##OPS_RO.
+La cuenta pudo leer el alert log sin recibir permisos de escritura.
+
+El ADR ocupa 32 MB y contiene 249 trazas en esta medición.
+Está fuera del volumen, en la capa del contenedor: sus registros
+se pierden al eliminar el contenedor.
+El bloque de SPFILE/password file de la inspección Linux salió
+vacío; esto no demuestra que falten esos archivos.
+
+Evidencias: registros de los apartados 10 y 11 en script/ y spool/.
