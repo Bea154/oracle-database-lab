@@ -661,3 +661,248 @@ y potencialmente en registros de ejecución.
 La versión corregida usa autenticación del sistema operativo:
 sqlplus / as sysdba dentro del contenedor.
 Evidencias: V003 y scripts/deployment/env/08-aplicar-migraciones.sh.
+
+# Preguntas tipo examen
+
+## P1–P12 y adicionales
+
+- P1: A y D. La copia tras cierre limpio es consistente y puede
+  restaurarse y abrirse sin recuperación con redo.
+  Evidencia: 00-backup-lab3.
+- P2: B. OFFLINE, copia física, RENAME DATAFILE y ONLINE.
+  Evidencia: 03-reubicar-datafiles.
+- P-D1: C. NO AUTHENTICATION convierte al propietario en una
+  cuenta de solo esquema. Evidencia: V003.
+- P3: A y C. STARTUP_TIME corresponde al arranque de la instancia;
+  CREATED corresponde a la creación de la base.
+  Evidencia: 05-instancia-y-base.
+- P4: A y C. En NOMOUNT se pueden consultar parámetros y
+  ejecutar CREATE CONTROLFILE.
+- P5: B. El cambio a ARCHIVELOG se realiza en MOUNT.
+- P6: B. Con SPFILE, el SCOPE predeterminado es BOTH.
+  Evidencia: experimento 07.
+- P7: C. PROCESSES no se modifica desde una PDB: ORA-65040.
+  Evidencia: 07-parametros-cambios.
+- P8: A y C. Un PFILE válido permite arrancar y reconstruir
+  el SPFILE defectuoso.
+- P9: B. ASMM reparte la SGA; DB_CACHE_SIZE fija un mínimo
+  para el buffer cache gestionado automáticamente.
+- P10: A y D. El área de ordenación y la memoria de sesión
+  pertenecen a la PGA en servidor dedicado.
+- P-G1: B. Las variables de enlace permiten reutilizar SQL
+  y reducen los análisis duros. Evidencia: 08-parse-y-pga.
+- P-G2: B. La ordenación no cupo en su área de trabajo y
+  necesitó varias pasadas utilizando TEMP.
+  Evidencia: ordenación manual, 6 PASSES, experimento 08.
+- P11: C. LGWR debe completar la escritura del redo del COMMIT
+  en el comportamiento síncrono habitual.
+- P12: B y D. PMON y SMON son procesos obligatorios.
+
+## P13–P24
+
+- P13: B. Dentro de FREEPDB1 la consulta queda limitada
+  a CON_ID 3. Evidencia: experimento 10.
+- P14: B. CONTAINER_DATA = ALL amplía la visibilidad
+  entre contenedores desde la raíz.
+- P15: A y D. El permiso cubre también futuras tablas de HR,
+  pero no concede lectura de otros esquemas.
+  Evidencia: 10-que-ve-cada-usuario.
+- P16: B y D. Control files y online redo forman parte
+  de los archivos de la base.
+- P17: C. En el escenario planteado, sin el redo necesario
+  solo queda restaurar la copia completa consistente,
+  perdiendo los cambios posteriores.
+- P18: B. La decodificación predeterminada asume SMALLFILE;
+  el ROWID de BIGFILE requiere indicar BIGFILE.
+  Evidencia: 12-bloque.
+- P19: A y B. PCTFREE reserva espacio para el crecimiento
+  de las filas existentes y limita el llenado por inserciones.
+- P20: B. bfr = floor((8192-96)*0.9/180) = 40;
+  ceil(2000000/40) = 50000 bloques.
+- P21: B. db file scattered read corresponde a lecturas
+  multibloque hacia el Buffer Cache.
+- P22: A y C. Identificar las filas y reorganizar con espacio
+  para crecimiento son acciones apropiadas ante migración,
+  comprobando antes la causa.
+  Evidencia: 14-filas-migradas.
+- P23: B. La fila supera el bloque y queda encadenada;
+  MOVE no consigue hacerla caber en un solo bloque.
+- P24: B. Cuenta de observación con permisos de catálogo,
+  visibilidad y concesión puntual de lectura del alert log.
+  Evidencias: cuenta 02 y ampliación 11.
+
+## P25–P36
+
+- P25: B. PDB$SEED es la plantilla de solo lectura.
+- P26: C. El nombre C## no es válido para crear un usuario
+  local desde la PDB: ORA-65094.
+- P27: B. Primero CLOSE IMMEDIATE; después DROP
+  INCLUDING DATAFILES. Evidencia: 10-ciclo-vida-pdb.
+- P28: A y C. V$DATAFILE y V$LOG pueden obtener información
+  de los control files con la base montada.
+- P29: A. X$KCCLE expone información procedente del control file.
+- P30: B. Las vistas CDB_ existen en raíz y PDB; desde una PDB
+  su ámbito queda limitado a esa PDB.
+- P31: B. Los tempfiles se recrean; RMAN no los respalda
+  como los datafiles permanentes. Una copia física del volumen
+  puede incluirlos igualmente.
+- P32: B. La instancia sigue usando los parámetros en memoria
+  y puede generar un SPFILE desde esa memoria.
+- P33: B. V$PWFILE_USERS muestra usuarios y privilegios
+  administrativos del password file.
+- P34: A y B. El bloque contiene ITL y directorio de filas.
+  Evidencia: volcado 12.
+- P35: B. En el caso AUTOALLOCATE del laboratorio se observan
+  extensiones iniciales de 64 KiB y después de 1 MiB.
+- P36: B. AUTO indica ASSM: gestión del espacio libre
+  de los bloques mediante mapas de bits.
+
+## P37–P46
+
+- P37: B. Es la respuesta prevista para el entorno 23ai+
+  del laboratorio, con BIGFILE como tipo predeterminado
+  y gestión local. El tipo predeterminado debe comprobarse
+  en cada base; no se deduce únicamente de la versión.
+- P38: A. Los accesos se resolvieron desde el Buffer Cache.
+  Cero lecturas físicas no implica que no se usara un índice.
+- P39: A y B. Más espacio reservado o filas mayores reducen
+  cuántas filas caben por bloque.
+- P40: B. Vaciar la caché puede aumentar lecturas físicas
+  y latencias de las sesiones afectadas al recalentarla.
+  Esto no significa necesariamente acceder al disco físico:
+  puede intervenir la caché de Linux.
+- P41: B. En el ejemplo, la migrada se trasladó al crecer;
+  la encadenada necesita varias piezas porque supera el bloque.
+- P42: A. REBUILD recupera el índice UNUSABLE.
+  MOVE ONLINE es una alternativa cuando está soportada.
+  Evidencia: PK_MIGRA pasó de UNUSABLE a VALID.
+- P43: A. V$DIAG_ALERT_EXT permite leer el alert log por SQL.
+- P44: A y B. Revisar el crecimiento y ampliar capacidad
+  donde proceda, comprobando espacio físico y límites.
+- P45: A y B. Las PDB comparten la SGA, los procesos
+  de background y el conjunto de online redo de la instancia.
+- P46: B. Con solo CREATE SESSION, el usuario local no puede
+  cambiar a la raíz: ORA-01031.
+  Evidencia: 10-que-ve-cada-usuario.
+
+# Preguntas tipo examen
+
+## P1–P12 y adicionales
+
+- P1: A y D. La copia tras cierre limpio es consistente y puede
+  restaurarse y abrirse sin recuperación con redo.
+  Evidencia: 00-backup-lab3.
+- P2: B. OFFLINE, copia física, RENAME DATAFILE y ONLINE.
+  Evidencia: 03-reubicar-datafiles.
+- P-D1: C. NO AUTHENTICATION convierte al propietario en una
+  cuenta de solo esquema. Evidencia: V003.
+- P3: A y C. STARTUP_TIME corresponde al arranque de la instancia;
+  CREATED corresponde a la creación de la base.
+  Evidencia: 05-instancia-y-base.
+- P4: A y C. En NOMOUNT se pueden consultar parámetros y
+  ejecutar CREATE CONTROLFILE.
+- P5: B. El cambio a ARCHIVELOG se realiza en MOUNT.
+- P6: B. Con SPFILE, el SCOPE predeterminado es BOTH.
+  Evidencia: experimento 07.
+- P7: C. PROCESSES no se modifica desde una PDB: ORA-65040.
+  Evidencia: 07-parametros-cambios.
+- P8: A y C. Un PFILE válido permite arrancar y reconstruir
+  el SPFILE defectuoso.
+- P9: B. ASMM reparte la SGA; DB_CACHE_SIZE fija un mínimo
+  para el buffer cache gestionado automáticamente.
+- P10: A y D. El área de ordenación y la memoria de sesión
+  pertenecen a la PGA en servidor dedicado.
+- P-G1: B. Las variables de enlace permiten reutilizar SQL
+  y reducen los análisis duros. Evidencia: 08-parse-y-pga.
+- P-G2: B. La ordenación no cupo en su área de trabajo y
+  necesitó varias pasadas utilizando TEMP.
+  Evidencia: ordenación manual, 6 PASSES, experimento 08.
+- P11: C. LGWR debe completar la escritura del redo del COMMIT
+  en el comportamiento síncrono habitual.
+- P12: B y D. PMON y SMON son procesos obligatorios.
+
+## P13–P24
+
+- P13: B. Dentro de FREEPDB1 la consulta queda limitada
+  a CON_ID 3. Evidencia: experimento 10.
+- P14: B. CONTAINER_DATA = ALL amplía la visibilidad
+  entre contenedores desde la raíz.
+- P15: A y D. El permiso cubre también futuras tablas de HR,
+  pero no concede lectura de otros esquemas.
+  Evidencia: 10-que-ve-cada-usuario.
+- P16: B y D. Control files y online redo forman parte
+  de los archivos de la base.
+- P17: C. En el escenario planteado, sin el redo necesario
+  solo queda restaurar la copia completa consistente,
+  perdiendo los cambios posteriores.
+- P18: B. La decodificación predeterminada asume SMALLFILE;
+  el ROWID de BIGFILE requiere indicar BIGFILE.
+  Evidencia: 12-bloque.
+- P19: A y B. PCTFREE reserva espacio para el crecimiento
+  de las filas existentes y limita el llenado por inserciones.
+- P20: B. bfr = floor((8192-96)*0.9/180) = 40;
+  ceil(2000000/40) = 50000 bloques.
+- P21: B. db file scattered read corresponde a lecturas
+  multibloque hacia el Buffer Cache.
+- P22: A y C. Identificar las filas y reorganizar con espacio
+  para crecimiento son acciones apropiadas ante migración,
+  comprobando antes la causa.
+  Evidencia: 14-filas-migradas.
+- P23: B. La fila supera el bloque y queda encadenada;
+  MOVE no consigue hacerla caber en un solo bloque.
+- P24: B. Cuenta de observación con permisos de catálogo,
+  visibilidad y concesión puntual de lectura del alert log.
+  Evidencias: cuenta 02 y ampliación 11.
+
+## P25–P36
+
+- P25: B. PDB$SEED es la plantilla de solo lectura.
+- P26: C. El nombre C## no es válido para crear un usuario
+  local desde la PDB: ORA-65094.
+- P27: B. Primero CLOSE IMMEDIATE; después DROP
+  INCLUDING DATAFILES. Evidencia: 10-ciclo-vida-pdb.
+- P28: A y C. V$DATAFILE y V$LOG pueden obtener información
+  de los control files con la base montada.
+- P29: A. X$KCCLE expone información procedente del control file.
+- P30: B. Las vistas CDB_ existen en raíz y PDB; desde una PDB
+  su ámbito queda limitado a esa PDB.
+- P31: B. Los tempfiles se recrean; RMAN no los respalda
+  como los datafiles permanentes. Una copia física del volumen
+  puede incluirlos igualmente.
+- P32: B. La instancia sigue usando los parámetros en memoria
+  y puede generar un SPFILE desde esa memoria.
+- P33: B. V$PWFILE_USERS muestra usuarios y privilegios
+  administrativos del password file.
+- P34: A y B. El bloque contiene ITL y directorio de filas.
+  Evidencia: volcado 12.
+- P35: B. En el caso AUTOALLOCATE del laboratorio se observan
+  extensiones iniciales de 64 KiB y después de 1 MiB.
+- P36: B. AUTO indica ASSM: gestión del espacio libre
+  de los bloques mediante mapas de bits.
+
+## P37–P46
+
+- P37: B. Es la respuesta prevista para el entorno del laboratorio:
+  BIGFILE como tipo predeterminado y gestión local.
+  El tipo predeterminado debe comprobarse en cada base;
+  no se deduce únicamente de la versión.
+- P38: A. Los accesos se resolvieron desde el Buffer Cache.
+  Cero lecturas físicas no implica que no se usara un índice.
+- P39: A y B. Más espacio reservado o filas mayores reducen
+  cuántas filas caben por bloque.
+- P40: B. Vaciar la caché puede aumentar las lecturas físicas
+  y las latencias al recalentarla. Puede intervenir también
+  la caché del sistema operativo.
+- P41: B. En el ejemplo, la migrada se trasladó al crecer;
+  la encadenada necesita varias piezas porque supera el bloque.
+- P42: A. REBUILD recupera el índice UNUSABLE.
+  MOVE ONLINE es una alternativa cuando está soportada.
+  Evidencia: PK_MIGRA pasó de UNUSABLE a VALID.
+- P43: A. V$DIAG_ALERT_EXT permite leer el alert log por SQL.
+- P44: A y B. Revisar el crecimiento y ampliar capacidad
+  donde proceda, comprobando espacio físico y límites.
+- P45: A y B. Las PDB comparten la SGA, los procesos
+  de background y el conjunto de online redo de la instancia.
+- P46: B. Con solo CREATE SESSION, el usuario local no puede
+  cambiar a la raíz: ORA-01031.
+  Evidencia: 10-que-ve-cada-usuario.
